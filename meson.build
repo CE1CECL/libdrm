@@ -96,9 +96,11 @@ endif
 config.set10('HAVE_LIBDRM_ATOMIC_PRIMITIVES', intel_atomics)
 config.set10('HAVE_LIB_ATOMIC_OPS', lib_atomics)
 
-dep_pciaccess = dependency('pciaccess', version : '>= 0.10', required : get_option('intel'))
+core_only = get_option('core-only')
 
+dep_pciaccess = dependency('pciaccess', version : '>= 0.10', required : get_option('intel'))
 with_intel = get_option('intel') \
+  .require(not core_only, error_message : '`core-only=true` disables all drivers') \
   .require(with_atomics, error_message : 'libdrm_intel requires atomics') \
   .require(dep_pciaccess.found(), error_message : 'libdrm_intel requires libpciaccess') \
   .disable_auto_if(not host_machine.cpu_family().startswith('x86')) \
@@ -106,44 +108,55 @@ with_intel = get_option('intel') \
 summary('Intel', with_intel)
 
 with_radeon = get_option('radeon') \
+  .require(not core_only, error_message : '`core-only=true` disables all drivers') \
   .require(with_atomics, error_message : 'libdrm_radeon requires atomics') \
   .allowed()
 summary('Radeon', with_radeon)
 
 with_amdgpu = get_option('amdgpu') \
+  .require(not core_only, error_message : '`core-only=true` disables all drivers') \
   .require(with_atomics, error_message : 'libdrm_amdgpu requires atomics') \
   .allowed()
 summary('AMDGPU', with_amdgpu)
 
 with_nouveau = get_option('nouveau') \
+  .require(not core_only, error_message : '`core-only=true` disables all drivers') \
   .require(with_atomics, error_message : 'libdrm_nouveau requires atomics') \
   .allowed()
 summary('Nouveau', with_nouveau)
 
-with_vmwgfx = get_option('vmwgfx').allowed()
+with_vmwgfx = get_option('vmwgfx') \
+  .require(not core_only, error_message : '`core-only=true` disables all drivers') \
+  .allowed()
 summary('vmwgfx', with_vmwgfx)
 
 with_omap = get_option('omap') \
+  .require(not core_only, error_message : '`core-only=true` disables all drivers') \
   .require(with_atomics, error_message : 'libdrm_omap requires atomics') \
   .enabled()
 summary('OMAP', with_omap)
 
 with_tegra = get_option('tegra') \
+  .require(not core_only, error_message : '`core-only=true` disables all drivers') \
   .require(with_atomics, error_message : 'libdrm_tegra requires atomics') \
   .disable_auto_if(not ['arm', 'aarch64'].contains(host_machine.cpu_family())) \
   .enabled()
 summary('Tegra', with_tegra)
 
 with_etnaviv = get_option('etnaviv') \
+  .require(not core_only, error_message : '`core-only=true` disables all drivers') \
   .require(with_atomics, error_message : 'libdrm_etnaviv requires atomics') \
   .disable_auto_if(not ['arm', 'aarch64', 'arc', 'mips', 'mips64', 'loongarch64'].contains(host_machine.cpu_family())) \
   .allowed()
 summary('Etnaviv', with_etnaviv)
 
-with_exynos = get_option('exynos').enabled()
+with_exynos = get_option('exynos') \
+  .require(not core_only, error_message : '`core-only=true` disables all drivers') \
+  .enabled()
 summary('EXYNOS', with_exynos)
 
 with_vc4 = get_option('vc4') \
+  .require(not core_only, error_message : '`core-only=true` disables all drivers') \
   .disable_auto_if(not ['arm', 'aarch64'].contains(host_machine.cpu_family())) \
   .allowed()
 summary('VC4', with_vc4)
