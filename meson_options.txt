@@ -19,6 +19,12 @@
 # SOFTWARE.
 
 option(
+  'core-only',
+  type : 'boolean',
+  value : false,
+  description : 'When set to `true`, all drivers are disabled. Incompatible with setting any of them to `enabled`.',
+)
+option(
   'intel',
   type : 'feature',
   description : '''Enable support for Intel's KMS API.''',
