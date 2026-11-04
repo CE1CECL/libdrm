@@ -32,9 +32,6 @@
 #include <errno.h>
 #include <drm.h>
 #include <i915_drm.h>
-#ifndef __ANDROID__
-#include <pciaccess.h>
-#endif
 #include "libdrm_macros.h"
 #include "intel_bufmgr.h"
 #include "intel_bufmgr_priv.h"
@@ -324,42 +321,6 @@ drm_intel_get_pipe_from_crtc_id(drm_intel_bufmgr *bufmgr, int crtc_id)
 	return -1;
 }
 
-#ifndef __ANDROID__
-static size_t
-drm_intel_probe_agp_aperture_size(int fd)
-{
-	struct pci_device *pci_dev;
-	size_t size = 0;
-	int ret;
-
-	ret = pci_system_init();
-	if (ret)
-		goto err;
-
-	/* XXX handle multiple adaptors? */
-	pci_dev = pci_device_find_by_slot(0, 0, 2, 0);
-	if (pci_dev == NULL)
-		goto err;
-
-	ret = pci_device_probe(pci_dev);
-	if (ret)
-		goto err;
-
-	size = pci_dev->regions[2].size;
-err:
-	pci_system_cleanup ();
-	return size;
-}
-#else
-static size_t
-drm_intel_probe_agp_aperture_size(int fd)
-{
-	/* Nothing seems to rely on this value on Android anyway... */
-	fprintf(stderr, "%s: Mappable aperture size hardcoded to 64MiB\n", __func__);
-	return 64 * 1024 * 1024;
-}
-#endif
-
 drm_public int
 drm_intel_get_aperture_sizes(int fd, size_t *mappable, size_t *total)
 {
@@ -371,12 +332,13 @@ drm_intel_get_aperture_sizes(int fd, size_t *mappable, size_t *total)
 	if (ret)
 		return ret;
 
-	*mappable = 0;
-	/* XXX add a query for the kernel value? */
-	if (*mappable == 0)
-		*mappable = drm_intel_probe_agp_aperture_size(fd);
-	if (*mappable == 0)
-		*mappable = 64 * 1024 * 1024; /* minimum possible value */
+	/* The i915 driver in mesa/amber is the only remaining consumer of this
+	 * interface and it does not consume the mappable value. No kernel
+	 * interface for querying GMADR_BAR was ever added so return a sensible,
+	 * hardcoded minimum rather than wrangling with PCI.
+	 */
+	*mappable = 64 * 1024 * 1024; /* minimum possible value */
+
 	*total = aperture.aper_size;
 	return 0;
 }

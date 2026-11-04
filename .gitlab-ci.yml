@@ -40,7 +40,7 @@ stages:
   variables:
     BUILD_OS: debian
     FDO_DISTRIBUTION_VERSION: trixie-slim
-    FDO_DISTRIBUTION_PACKAGES: 'build-essential docbook-xsl libatomic-ops-dev libcairo2-dev libcunit1-dev libpciaccess-dev meson ninja-build pkg-config python3 python3-pip python3-wheel python3-setuptools python3-docutils valgrind'
+    FDO_DISTRIBUTION_PACKAGES: 'build-essential docbook-xsl libatomic-ops-dev libcairo2-dev libcunit1-dev meson ninja-build pkg-config python3 python3-pip python3-wheel python3-setuptools python3-docutils valgrind'
     # bump this tag every time you change something which requires rebuilding the
     # base image
     FDO_DISTRIBUTION_TAG: "2026-04-27.0"
@@ -68,7 +68,7 @@ stages:
   variables:
     BUILD_OS: freebsd
     FDO_DISTRIBUTION_VERSION: "14.2"
-    FDO_DISTRIBUTION_PACKAGES: 'meson ninja pkgconf libpciaccess textproc/py-docutils cairo'
+    FDO_DISTRIBUTION_PACKAGES: 'meson ninja pkgconf textproc/py-docutils cairo'
     # bump this tag every time you change something which requires rebuilding the
     # base image
     FDO_DISTRIBUTION_TAG: "2025-05-22.0"
@@ -253,7 +253,6 @@ meson-arch-daily:
         cairo
         cunit
         libatomic_ops
-        libpciaccess
         meson
         valgrind
         python-docutils
