@@ -43,6 +43,8 @@ LOCAL_C_INCLUDES := \
 LOCAL_CFLAGS := \
 	-DHAVE_VISIBILITY=1 \
 	-DHAVE_LIBDRM_ATOMIC_PRIMITIVES=1
+LOCAL_CONLYFLAGS += \
+	-std=c99
 include $(BUILD_STATIC_LIBRARY)
 
 # Shared library for the device
@@ -61,6 +63,8 @@ LOCAL_C_INCLUDES := \
 LOCAL_CFLAGS := \
         -DHAVE_VISIBILITY=1 \
         -DHAVE_LIBDRM_ATOMIC_PRIMITIVES=1
+LOCAL_CONLYFLAGS += \
+	-std=c99
 include $(BUILD_SHARED_LIBRARY)
 
 include $(call all-makefiles-under,$(LOCAL_PATH))

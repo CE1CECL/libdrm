@@ -3002,7 +3002,7 @@ static int drmProcessPciDevice(drmDevicePtr *device, const char *d_name,
                                const char *node, int node_type,
                                int maj, int min, bool fetch_deviceinfo)
 {
-    const int max_node_str = ALIGN(drmGetMaxNodeName(), sizeof(void *));
+    const int max_node_str = drmGetMaxNodeName();
     int ret, i;
     char *addr;
 
